@@ -14,7 +14,7 @@
 | `scripts/update.py` | ニュースを取ってきて、重複を除いて保存し、ページを作り直す |
 | `scripts/template.html` | ページの見た目（デザイン） |
 | `data/news.json` | これまで集めた記事（30日分・最大400件） |
-| `docs/index.html` | 公開されるページ（自動で作られるので直接いじらない） |
+| `index.html`, `docs/index.html` | 公開されるページ（自動で作られるので直接いじらない） |
 | `.github/workflows/update.yml` | 毎日の自動実行の設定 |
 
 ## はじめの設定（1回だけ）

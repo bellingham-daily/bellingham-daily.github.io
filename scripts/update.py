@@ -27,7 +27,8 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 DATA_FILE = ROOT / "data" / "news.json"
 TEMPLATE_FILE = ROOT / "scripts" / "template.html"
-OUTPUT_FILE = ROOT / "docs" / "index.html"
+# 公開設定がリポジトリ直下でも docs/ でも表示されるよう、両方に書き出す
+OUTPUT_FILES = [ROOT / "index.html", ROOT / "docs" / "index.html"]
 
 JST = timezone(timedelta(hours=9))
 
@@ -151,8 +152,10 @@ def render(items: list[dict], updated: datetime) -> None:
     template = TEMPLATE_FILE.read_text(encoding="utf-8")
     payload = json.dumps({"updated": updated.isoformat(), "items": items}, ensure_ascii=False)
     payload = payload.replace("</", "<\\/")  # scriptタグの中に安全に埋め込むため
-    OUTPUT_FILE.parent.mkdir(parents=True, exist_ok=True)
-    OUTPUT_FILE.write_text(template.replace("__NEWS_DATA__", payload), encoding="utf-8")
+    page = template.replace("__NEWS_DATA__", payload)
+    for out in OUTPUT_FILES:
+        out.parent.mkdir(parents=True, exist_ok=True)
+        out.write_text(page, encoding="utf-8")
 
 
 def sample_items() -> list[dict]:
@@ -185,7 +188,7 @@ def main() -> int:
 
     if "--sample" in sys.argv:
         render(sample_items(), now)
-        print(f"サンプルでページを作成: {OUTPUT_FILE}")
+        print("サンプルでページを作成しました")
         return 0
 
     new_items: list[dict] = []
